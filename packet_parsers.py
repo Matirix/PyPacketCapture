@@ -50,7 +50,7 @@ def parse_arp_header(hex_data):
 
 def parse_ipv4_header(hex_data):
     total_length = hex_data[4:8]
-    flags_and_fragment_offset = hex_data[12:16]  # Correct the index to grab bytes 6-7 (12-15 in hex)
+    flags_and_fragment_offset = hex_data[12:16]
     flags_and_fragment_offset_int = int(flags_and_fragment_offset, 16)
 
     # Convert the flags_and_fragment_offset to binary and format it

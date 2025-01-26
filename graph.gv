@@ -1,0 +1,14 @@
+digraph packets {
+
+    start [label="Start", shape=doublecircle];
+    finish [label="Finish", shape=doublecircle];
+    parse_nodes [label="PARSE NODES"];
+    capture_packets [label="CAPTURE PACKETS"];
+    parse_packet_headers [label="PARSE PACKETS"];
+
+
+    start -> capture_packets [label="main.py"];
+    capture_packets -> parse_packet_headers [label="parse_ethernet_headers"];
+    parse_packet_headers -> parse_nodes [label="ICMP, IPv4, TCP or UDP"];
+    parse_nodes -> finish [label="Display results"];
+}
