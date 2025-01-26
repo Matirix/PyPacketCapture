@@ -1,12 +1,19 @@
-# Parse Ethernet header
+"""
+Accepts 12 hex digits and formats it into a MAC Address
+"""
 def format_mac(hex_data):
     return ':'.join(hex_data[i:i + 2] for i in range(0, 12, 2))
 
-
+"""
+Accepts 16 hex digits and returns an IP address
+"""
 def format_hex_to_decimal(hex_data):
     return '.'.join(str(int(hex_data[i:i + 2], 16)) for i in range(0, len(hex_data), 2))
 
-
+"""
+Accepts a hex dump and translates it into a more human readable format.
+Constrained to only ARP and IPv4 packets.
+"""
 def parse_ethernet_header(hex_data):
     dest_mac = ':'.join(hex_data[i:i + 2] for i in range(0, 12, 2))
     source_mac = ':'.join(hex_data[i:i + 2] for i in range(12, 24, 2))
@@ -34,7 +41,9 @@ def parse_ethernet_header(hex_data):
     return ether_type, payload
 
 
-# Parse ARP header
+"""
+Parses the fields for ARP into human-readable format.
+"""
 def parse_arp_header(hex_data):
     hardware_type = int(hex_data[:4], 16)
 
@@ -49,7 +58,10 @@ def parse_arp_header(hex_data):
     print(f"  {'Target MAC:':<25} {hex_data[36:48]:<20} | {format_mac(hex_data[36:48])}")
     print(f"  {'Target IP:':<25} {hex_data[48:56]:<20} | {format_hex_to_decimal(hex_data[48:56])}")
 
-
+"""
+Parses the fields for IPv4 Header into human-readable format and then passes the remaining payload into
+its respective function (UDP, TCP, ICMP)
+"""
 def parse_ipv4_header(hex_data):
     total_length = hex_data[4:8]
     flags_and_fragment_offset = hex_data[12:16]
@@ -90,7 +102,9 @@ def parse_ipv4_header(hex_data):
     else:
         print("Protocols accepted: ICMP, UDP and TCP")
 
-
+"""
+Parses the fields for TCP into human-readable format.
+"""
 def parse_tcp_header(hex_data):
     flags = hex_data[24:28]
     flags_in_binary = bin(int(flags, 16))[9:]
@@ -119,6 +133,9 @@ def parse_tcp_header(hex_data):
     print(f"  {'Payload (Hex):':<25} {hex_data[40:]:<20}")
 
 
+"""
+Parses the fields for UDP into human-readable format.
+"""
 def parse_udp_header(hex_data):
     src_p = hex_data[0:4]
     dest_p = hex_data[4:8]
@@ -133,6 +150,9 @@ def parse_udp_header(hex_data):
     print(f"  {'Payload:':<25} {payload:<20}")
 
 
+"""
+Parses the fields for ICMP into human-readable format.
+"""
 def parse_icmp_header(hex_data):
     p_type = hex_data[0:2]
     code = hex_data[2:4]
