@@ -11,7 +11,7 @@ def parse_ethernet_header(hex_data):
     dest_mac = ':'.join(hex_data[i:i + 2] for i in range(0, 12, 2))
     source_mac = ':'.join(hex_data[i:i + 2] for i in range(12, 24, 2))
     ether_type = hex_data[24:28]
-    print("RAW HEX_DATA\n", hex_data)
+    # print("RAW HEX_DATA\n", hex_data)
 
     print(f"Ethernet Header:")
     print(f"  {'Destination MAC:':<25} {hex_data[0:12]:<20} | {dest_mac}")
@@ -25,6 +25,8 @@ def parse_ethernet_header(hex_data):
         parse_arp_header(payload)
     elif ether_type == "0800":  # IPv4
         parse_ipv4_header(payload)
+    elif ether_type == "86dd": # IPv6
+        print(f"No parser available for IPv6 {ether_type:<20}")
     else:
         print(f"  {'Unknown EtherType:':<25} {ether_type:<20} | {int(ether_type, 16)}")
         print("  No parser available for this EtherType.")
@@ -67,7 +69,6 @@ def parse_ipv4_header(hex_data):
     payload = hex_data[40:]
 
     print(f"IPv4 Header")
-    print(hex_data)
     print(f"  {'Version:':<25} {hex_data[:1]:<20} | {int(hex_data[:1], 16)}")
     print(f"  {'Header Length:':<25} {hex_data[1:2]:<20} | {int(hex_data[1:2], 16) * 4} bytes")  # A word is 4 bytes.
     print(f"  {'Total Length:':<25} {total_length:<20} | {int(total_length, 16)}")
@@ -101,7 +102,7 @@ def parse_tcp_header(hex_data):
     print(f"  {'Sequence Number:':<25} {hex_data[8:16]:<20} | {int(hex_data[8:16], 16)}")
     print(f"  {'Acknowledgement Number:':<25} {hex_data[16:24]:<20} | {int(hex_data[16:24], 16)}")
     print(f"  {'Data Offset:':<25} {hex_data[24:25]:<20} | {int(hex_data[24:25], 16) * 4} bytes")
-    print(f"  {'Reserved:':<25} {"0b" + reserved[3:4]:<20} | {int(reserved,2 )}")
+    print(f"  {'Reserved:':<25} {'0b' + reserved[3:4]:<20} | {int(reserved,2 )}")
     print(f"  {'Flags:':<25} {'0b' + flags_in_binary:<20} | {int(flags_in_binary,2)}")
     print(f"  {'--NS:':<25} {flags_in_binary[0]:<20}")
     print(f"  {'--CWR:':<25} {flags_in_binary[1]:<20}")
@@ -112,8 +113,6 @@ def parse_tcp_header(hex_data):
     print(f"  {'--RST:':<25} {flags_in_binary[6]:<20}")
     print(f"  {'--SYN:':<25} {flags_in_binary[7]:<20}")
     print(f"  {'--FIN:':<25} {flags_in_binary[8]:<20}")
-
-
     print(f"  {'Window Size:':<25} {hex_data[28:32]:<20} | {int(hex_data[28:32], 16)}")
     print(f"  {'Checksum:':<25} {hex_data[32:36]:<20} | {int(hex_data[32:36], 16)}")
     print(f"  {'Urgent Pointer:':<25} {hex_data[36:40]:<20} | {int(hex_data[36:40], 16)}")
